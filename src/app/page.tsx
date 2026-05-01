@@ -1,65 +1,62 @@
-import Image from "next/image";
+"use client";
+
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const t = name.trim();
+    if (!t) return;
+    localStorage.setItem("zeplin_display_name", t);
+    router.push(`/game?u=${encodeURIComponent(t)}`);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-x-hidden bg-[#070b14] px-3 py-8 text-zinc-100 sm:px-4 sm:py-10">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 50% at 50% -20%, rgba(34,211,238,0.28), transparent 50%), radial-gradient(ellipse 50% 40% at 100% 0%, rgba(129,140,248,0.22), transparent 45%)",
+        }}
+      />
+      <div className="relative z-10 w-full max-w-md rounded-[1.5rem] border border-white/10 bg-white/[0.05] p-6 shadow-2xl backdrop-blur-xl sm:rounded-[2rem] sm:p-8 md:p-10">
+        <p className="text-center text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-300/80">
+          Zeplin
+        </p>
+        <h1 className="mt-3 text-center text-2xl font-semibold tracking-tight sm:text-3xl">
+          Odaya gir
+        </h1>
+        <p className="mt-2 text-center text-sm text-zinc-400">
+          Arkadaşınla aynı sanal masaya bağlanmak için bir kullanıcı adı yeterli.
+          Veriler paylaşılan Firebase odasında tutulur.
+        </p>
+        <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-4">
+          <label className="text-xs font-medium text-zinc-400">
+            Kullanıcı adı
+            <input
+              autoFocus
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="ör. Efe"
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-base outline-none ring-cyan-500/30 focus:ring-2"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </label>
+          <button
+            type="submit"
+            className="mt-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-500 py-3.5 text-sm font-semibold text-slate-950 shadow-[0_0_40px_rgba(34,211,238,0.25)] transition hover:brightness-110"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            Masaya katıl
+          </button>
+        </form>
+        <p className="mt-6 text-center text-[11px] leading-relaxed text-zinc-500">
+          Bu yazılım yalnızca eğlence içindir; gerçek para veya kumar içermez.
+        </p>
+      </div>
     </div>
   );
 }

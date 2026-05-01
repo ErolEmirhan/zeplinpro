@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    /**
+     * Geliştirme / arkadaş ortamı.
+     * Yerel dosya konsoldaki kuralların yerini tutmaz — permission-denied alıyorsan:
+     *   firebase deploy --only firestore:rules
+     * veya Firebase Console → Firestore → Kurallar'dan aynı metni yapıştırıp Yayınla.
+     */
+    match /games/{gameId} {
+      allow read, write: if true;
+    }
+    /** Oyuncular, feed ve tüm alt yollar (players/..., feed/...) */
+    match /games/{gameId}/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

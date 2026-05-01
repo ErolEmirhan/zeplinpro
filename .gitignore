@@ -17,6 +17,13 @@
 /.next/
 /out/
 
+# @ducanh2912/next-pwa (build çıktısı — `npm run build` üretir)
+/public/sw.js
+/public/workbox-*.js
+/public/swe-worker-*.js
+/public/fallback-*.js
+/public/worker-*.js
+
 # production
 /build
 
