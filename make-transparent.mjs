@@ -25,41 +25,52 @@ async function processFile(file) {
     
     const getIdx = (x, y) => (y * width + x) * 4;
     
-    // Pixel is considered white background if R, G, B are all >= 235 (near-white)
-    const isWhite = (x, y) => {
+    // Detect white/grey background pixels including dark/light checkerboard patterns
+    const isBackgroundPixel = (x, y) => {
       const idx = getIdx(x, y);
-      return data[idx] >= 235 && data[idx+1] >= 235 && data[idx+2] >= 235;
+      const r = data[idx];
+      const g = data[idx+1];
+      const b = data[idx+2];
+      const a = data[idx+3];
+      
+      // If already transparent
+      if (a === 0) return true;
+      
+      // Bright white or near-white (R, G, B all high)
+      const isWhite = r >= 195 && g >= 195 && b >= 195;
+      
+      // Grey checkerboard squares (R, G, B close to each other, light to dark grey)
+      const isGrey = Math.abs(r - g) < 16 && 
+                     Math.abs(g - b) < 16 && 
+                     Math.abs(r - b) < 16 && 
+                     r >= 60 && r <= 225;
+                     
+      return isWhite || isGrey;
     };
     
-    // Queue borders
-    for (let x = 0; x < width; x++) {
-      if (isWhite(x, 0) && !visited[x]) {
-        queue.push([x, 0]);
-        visited[x] = 1;
-      }
-      if (isWhite(x, height - 1) && !visited[(height - 1) * width + x]) {
-        queue.push([x, height - 1]);
-        visited[(height - 1) * width + x] = 1;
-      }
-    }
+    // Seed queue with ALL background pixels within the outer 25-pixel margin
+    const MARGIN = 25;
     for (let y = 0; y < height; y++) {
-      if (isWhite(0, y) && !visited[y * width]) {
-        queue.push([0, y]);
-        visited[y * width] = 1;
-      }
-      if (isWhite(width - 1, y) && !visited[y * width + (width - 1)]) {
-        queue.push([width - 1, y]);
-        visited[y * width + (width - 1)] = 1;
+      for (let x = 0; x < width; x++) {
+        if (x < MARGIN || x >= width - MARGIN || y < MARGIN || y >= height - MARGIN) {
+          if (isBackgroundPixel(x, y)) {
+            const vIdx = y * width + x;
+            if (!visited[vIdx]) {
+              queue.push([x, y]);
+              visited[vIdx] = 1;
+            }
+          }
+        }
       }
     }
     
-    // BFS Flood Fill from edges to convert outer white to transparent
+    // BFS Flood Fill to clear background
     let qIdx = 0;
     while (qIdx < queue.length) {
       const [cx, cy] = queue[qIdx++];
       
       const idx = getIdx(cx, cy);
-      data[idx+3] = 0; // Set alpha to 0
+      data[idx+3] = 0; // Make transparent
       
       const neighbors = [
         [cx - 1, cy],
@@ -71,7 +82,7 @@ async function processFile(file) {
       for (const [nx, ny] of neighbors) {
         if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
           const vIdx = ny * width + nx;
-          if (!visited[vIdx] && isWhite(nx, ny)) {
+          if (!visited[vIdx] && isBackgroundPixel(nx, ny)) {
             visited[vIdx] = 1;
             queue.push([nx, ny]);
           }
@@ -79,7 +90,7 @@ async function processFile(file) {
       }
     }
     
-    // Trim/crop borders slightly to clean up edges if needed, then write out
+    // Write out the processed raw pixel data to PNG
     await sharp(data, {
       raw: {
         width,

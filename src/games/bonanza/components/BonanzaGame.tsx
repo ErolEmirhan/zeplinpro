@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBonanzaGame } from "../hooks/useBonanzaGame";
-import { setSoundMuted } from "../sounds/soundEngine";
+import { setSoundMuted, unlockAudio } from "../sounds/soundEngine";
 import { StatsPanel } from "./StatsPanel";
 import { AutoSpinControls } from "./AutoSpinControls";
 import { GameGrid } from "./GameGrid";
@@ -21,6 +21,18 @@ export function BonanzaGame() {
   const [statsOpen, setStatsOpen] = useState(false);
   const [doubleChanceActive, setDoubleChanceActive] = useState(false);
 
+  useEffect(() => {
+    const unlock = () => {
+      unlockAudio();
+    };
+    window.addEventListener("click", unlock);
+    window.addEventListener("touchstart", unlock);
+    return () => {
+      window.removeEventListener("click", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+  }, []);
+
   const spinning = game.phase !== "idle" && game.phase !== "freeSpinsIntro";
   const disabled = spinning;
 
@@ -34,13 +46,13 @@ export function BonanzaGame() {
 
   const handleNextBet = () => {
     if (disabled) return;
-    const idx = BET_OPTIONS.indexOf(game.bet);
+    const idx = BET_OPTIONS.indexOf(game.bet as any);
     if (idx < BET_OPTIONS.length - 1) game.setBet(BET_OPTIONS[idx + 1]);
   };
 
   const handlePrevBet = () => {
     if (disabled) return;
-    const idx = BET_OPTIONS.indexOf(game.bet);
+    const idx = BET_OPTIONS.indexOf(game.bet as any);
     if (idx > 0) game.setBet(BET_OPTIONS[idx - 1]);
   };
 
@@ -51,19 +63,21 @@ export function BonanzaGame() {
 
       <ScreenEffects shake={game.screenShake} flash={game.screenFlash}>
         {/* Top Header */}
-        <header className="relative z-20 flex items-center justify-between border-b border-white/[0.08] bg-black/45 px-4 py-2.5 backdrop-blur-2xl sm:px-6">
+        <header className="relative z-20 flex items-center justify-between border-b border-white/[0.05] bg-black/35 px-4 py-2.5 backdrop-blur-2xl sm:px-6">
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="rounded-xl border border-white/12 bg-white/[0.06] px-3 py-1.5 text-xs text-zinc-300 transition hover:border-pink-400/40 hover:text-white"
+              className="flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs font-semibold text-zinc-400 transition hover:border-pink-400/30 hover:text-white"
             >
-              ← Oyunlar
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+              Oyunlar
             </Link>
+            <div className="hidden sm:block h-5 w-px bg-white/[0.06]" />
             <div className="hidden sm:block">
-              <p className="text-[9px] font-bold uppercase tracking-[0.32em] text-pink-300/85 leading-none">
+              <p className="text-[9px] font-bold uppercase tracking-[0.32em] text-pink-300/70 leading-none">
                 Şeker Patlaması
               </p>
-              <h2 className="bg-gradient-to-r from-pink-200 via-fuchsia-200 to-violet-200 bg-clip-text text-sm font-black text-transparent">
+              <h2 className="bg-gradient-to-r from-pink-200 via-fuchsia-200 to-violet-200 bg-clip-text text-sm font-bold text-transparent">
                 Bonanza Pro
               </h2>
             </div>
@@ -74,25 +88,25 @@ export function BonanzaGame() {
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="rounded-2xl border-2 border-amber-400/60 bg-gradient-to-b from-amber-500/30 to-amber-600/15 px-4 py-1 text-center shadow-lg"
+              className="rounded-2xl border-2 border-amber-400/50 bg-gradient-to-b from-amber-500/25 to-amber-600/10 px-4 py-1 text-center shadow-lg"
             >
-              <p className="text-[9px] font-extrabold uppercase tracking-wider text-amber-200/90 leading-none">FREE SPIN</p>
-              <p className="font-money text-lg font-black text-amber-300 leading-tight">{game.freeSpinsLeft}</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-amber-200/80 leading-none">FREE SPIN</p>
+              <p className="font-money text-lg font-bold text-amber-300 leading-tight">{game.freeSpinsLeft}</p>
             </motion.div>
           )}
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setStatsOpen(true)}
-              className="rounded-xl border border-white/12 bg-white/[0.06] px-3.5 py-1.5 text-xs text-zinc-300 transition hover:bg-white/[0.1] hover:text-white"
+              className="rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-1.5 text-xs font-semibold text-zinc-400 transition hover:bg-white/[0.06] hover:text-white"
             >
-              İstatistik & Geçmiş
+              İstatistik
             </button>
             <button
               onClick={game.resetBalance}
-              className="rounded-xl border border-pink-500/30 bg-pink-500/10 px-3.5 py-1.5 text-xs text-pink-300 transition hover:bg-pink-500/20 hover:text-white"
+              className="rounded-xl border border-pink-500/15 bg-pink-500/8 px-3 py-1.5 text-xs font-semibold text-pink-400 transition hover:bg-pink-500/15"
             >
-              Bakiyeyi Sıfırla
+              Sıfırla
             </button>
           </div>
         </header>

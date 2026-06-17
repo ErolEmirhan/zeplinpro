@@ -276,7 +276,7 @@ export function GameRoom({ displayName }: Props) {
     if (!r.ok) showToast(r.reason);
     else {
       showToast(
-        `Çekildi: ${formatMult(r.mult)}× → +${formatMoney(r.win)} sanal para`,
+        `Çekildi: ${formatMult(r.mult)}× → +${formatMoney(r.win)} TL`,
       );
       if (rs != null) void pushFeedCash(displayName, r.mult, r.win, rs);
     }
@@ -561,7 +561,7 @@ export function GameRoom({ displayName }: Props) {
                   Bakiye ayarı
                 </h2>
                 <p className="mt-1 text-xs text-zinc-500">
-                  Bahis yokken sanal para ekleyin veya düşürün.
+                  Bahis yokken TL ekleyin veya düşürün.
                 </p>
                 <div className="mt-3 flex gap-2">
                   <input
@@ -759,7 +759,7 @@ export function GameRoom({ displayName }: Props) {
                   Bakiye ayarı
                 </h2>
                 <p className="mt-1 text-xs text-zinc-500">
-                  Bahis yokken sanal para ekleyin veya düşürün.
+                  Bahis yokken TL ekleyin veya düşürün.
                 </p>
                 <div className="mt-3 flex gap-2">
                   <input

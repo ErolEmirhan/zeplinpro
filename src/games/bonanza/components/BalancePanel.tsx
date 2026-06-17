@@ -17,7 +17,7 @@ export function BalancePanel({ balance, bet, lastWin, formatCoins }: Props) {
           {formatCoins(balance)}
         </p>
         <p className="mt-1.5 text-[10px] leading-relaxed text-zinc-500">
-          Sanal coin · eğlence amaçlı
+          Sanal TL · eğlence amaçlı
         </p>
       </GlassPanel>
       <GlassPanel title="Bahis">

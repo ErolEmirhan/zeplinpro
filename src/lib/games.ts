@@ -29,4 +29,24 @@ export const GAMES: GameCard[] = [
     badge: "Slot",
     theme: "candy",
   },
+  {
+    id: "iddia",
+    name: "İddia",
+    tagline: "Sanal futbol simülatörü ve canlı bahis",
+    description:
+      "5 büyük ligden takımların maçlarını canlı izle. Canlı bahis yap, maç gidişatına göre bahsini bozdur — tıpkı Zeplin gibi.",
+    joinPath: "/game/iddia",
+    badge: "Canlı Bahis",
+    theme: "cyan",
+  },
+  {
+    id: "patladin",
+    name: "Patladın Kanka",
+    tagline: "Bomba patlamadan yeşilleri bul, çarpanı kap",
+    description:
+      "5×5 karelerde 24 yeşil ve 1 kırmızı bomba. Her yeşil kartta çarpanı katla, patlamadan parayı çek!",
+    joinPath: "/game/patladin",
+    badge: "Mayınlar",
+    theme: "candy",
+  },
 ];
