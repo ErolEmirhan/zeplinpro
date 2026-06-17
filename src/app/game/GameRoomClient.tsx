@@ -20,7 +20,7 @@ export function GameRoomClient() {
     }
     const s = localStorage.getItem(STORAGE_KEY)?.trim();
     if (s) setName(s);
-    else router.replace("/");
+    else router.replace("/game/join");
   }, [router, search]);
 
   if (!name) {
